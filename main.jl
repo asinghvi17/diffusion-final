@@ -1,12 +1,12 @@
 #!/usr/bin/env julia
 # add flags: -O3 --compile=all
 
+using   Plots,        # for plotting
+        PlotThemes,   # to theme plots - :dark, :wong, :lime
+        ProgressMeter,  # just for lulz
+        StatsBase     # histogram
 
 function main()
-    using   Plots,        # for plotting
-            PlotThemes,   # to theme plots - :dark, :wong, :lime
-            ProgressMeter,  # just for lulz
-            StatsBase     # histogram
 
     gr();   # set the plot backend; for publication figures, use pgfplots.  GR is a nice quick framework that just works.
 
@@ -22,5 +22,6 @@ function main()
     # can only be solved analytically, use Runge-Kutta 4 or Euler's method.
 
     a = 1;
-    b = 1;
+    b::Int = 1;
+
 end
