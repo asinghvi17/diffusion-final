@@ -18,4 +18,4 @@ Implement a diffusion animator
 
 ∂Ψ/∂t = D⋅∇²Ψ
 
-$\Psi = \cos(ax)\cdot e^{-bt}$
+Ψ = cos(ax)⋅eᵇᵗ
