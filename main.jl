@@ -1,5 +1,8 @@
 #!/usr/bin/env julia
-using Plots, StatsBase
 
-a = 1
-b = 1
+using Plots, PlotThemes, ProgressBar, StatsBase
+
+gr();
+
+a = 1;
+b = 1;
