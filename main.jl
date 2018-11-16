@@ -1,8 +1,9 @@
 #!/usr/bin/env julia
+# add flags: -O3 --compile=all
 
 using   Plots,        # for plotting
         PlotThemes,   # to theme plots - :dark, :wong, :lime
-        ProgressBar,  # just for lulz
+        ProgressMeter,  # just for lulz
         StatsBase     # histogram
 
 gr();   # set the plot backend; for publication figures, use pgfplots.  GR is a nice quick framework that just works.
