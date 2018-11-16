@@ -10,13 +10,14 @@ gr();   # set the plot backend; for publication figures, use pgfplots.  GR is a 
 
 
 # ordinary differential equation of diffusion:
+# ∂Ψ/∂t = D⋅∇²Ψ
+# in one dimension:
 # ∂Ψ/∂t = D⋅∂²Ψ/∂x²
 # ⟹ Ψ = cos(ax)⋅exp(bt) such that a = Db
 
-# change to stochastic
+# change to stochastic where ⅊ is noise:
 # ∂Ψ/∂t = D⋅∂²Ψ/∂x² + ⅊
-# where ⅊ is noise
-# can only be solved analytically
+# can only be solved analytically, use Runge-Kutta 4 or Euler's method.
 
 a = 1;
 b = 1;

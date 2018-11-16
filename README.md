@@ -16,6 +16,6 @@ Implement a diffusion animator
 
 # Formulae
 
-$\frac{\partial \Psi}{\partial t} = D\nabla^2\Psi$
+∂Ψ/∂t = D⋅∇²Ψ
 
 $\Psi = \cos(ax)\cdot e^{-bt}$
