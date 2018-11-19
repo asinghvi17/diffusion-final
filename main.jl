@@ -19,16 +19,23 @@ using   Plots,                    # for plotting
         StatsBase,                # histogram
         DifferentialEquations     # diffyq solve
 
-function Ψ(x, t, a=1, b=1, D=1)
-    cos(a*x)*exp(b*t)
+function Ψ(x::Real, t::Real, a=1, b=1, D=1)
+    return cos(a*x)*exp(-b*t)
 end
 
 function main()
 
-    gr();   # set the plot backend; for publication figures, use pgfplots.
+    gr(size = (500,500));   # set the plot backend; for publication figures, use pgfplots.
             # GR is a nice quick framework that just works.
+    theme(:dark)
     a::Int = 1; # constant in cosine
     b::Int = 1; # constant in exponential
     D::Int = 2; # diffucion constant
 
+    p = contour(0:0.001:1, 0:0.001:1, ((x, y) -> Ψ(x, y, 1, 1, 1)), fill=true)
+
+    p
+
 end
+
+main()
