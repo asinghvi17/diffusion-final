@@ -20,7 +20,7 @@ Implement a diffusion animator
 
 Ψ = cos(ax)⋅eᵇᵗ
 
-∂Ψ/∂t = D⋅∂²Ψ/∂x² + ⅊ (where ⅊ is the noise term)
+∂Ψ/∂t = D⋅∂²Ψ/∂x² +  ℽ (where  ℽ is the noise term)
 
 # Method
 
