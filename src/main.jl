@@ -13,13 +13,8 @@
 # ∂Ψ/∂t = D⋅∂²Ψ/∂x² + ⅊
 # can only be solved analytically, use Runge-Kutta 4 or Euler's method.
 ###
-using   Plots,                    # for plotting
-        PlotThemes,               # to theme plots - :dark, :wong, :lime
-        ProgressMeter,            # just for lulz
-        StatsBase,                # histogram
-        DifferentialEquations     # diffyq solve
 
-include("structs.jl")
+include.(["h.jl"])
 
 function Ψ(x::Real, t::Real, a=1, b=1, D=1)
     return cos(a*x)*exp(-b*t)
