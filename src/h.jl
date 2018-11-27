@@ -10,7 +10,7 @@ using   Plots,                    # for plotting
 
 
 # define Cell struct and methods related to it.
-mutable struct cell{T} <: Real
+mutable struct Block {T}
 
     Q :: T   # heat
 
