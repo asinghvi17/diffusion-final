@@ -19,6 +19,8 @@ using   Plots,                    # for plotting
         StatsBase,                # histogram
         DifferentialEquations     # diffyq solve
 
+include("structs.jl")
+
 function Ψ(x::Real, t::Real, a=1, b=1, D=1)
     return cos(a*x)*exp(-b*t)
 end
@@ -34,7 +36,7 @@ function main()
 
     p = contour(0:0.001:1, 0:0.001:1, ((x, y) -> Ψ(x, y, 1, 1, 1)), fill=true)
 
-    p
+    display(p)
 
 end
 

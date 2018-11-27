@@ -19,3 +19,14 @@ Implement a diffusion animator
 ∂Ψ/∂t = D⋅∇²Ψ
 
 Ψ = cos(ax)⋅eᵇᵗ
+
+∂Ψ/∂t = D⋅∂²Ψ/∂x² + ⅊ (where ⅊ is the noise term)
+
+# Method
+
+Solve numerically, using RK4 or other methods
+
+Use a 'cell method' for 2 or 3 dimensions, where the material is discretized into 'cells', described by structs with material properties.  Or, continuously sample from functions - more computationally intensive, though.
+
+
+Store data using the Julia Plots.jl backend HDF5, which writes data into a file that can be easily plotted later.
