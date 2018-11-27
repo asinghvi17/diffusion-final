@@ -27,14 +27,19 @@ end
 
 function main()
 
-    gr(size = (500,500));   # set the plot backend; for publication figures, use pgfplots.
+    gr();   # set the plot backend; for publication figures, use pgfplots.
             # GR is a nice quick framework that just works.
     theme(:dark)
     a::Int = 1; # constant in cosine
     b::Int = 1; # constant in exponential
     D::Int = 2; # diffucion constant
 
-    p = contour(0:0.001:1, 0:0.001:1, ((x, y) -> Ψ(x, y, 1, 1, 1)), fill=true)
+    p = contour(
+    0:0.001:1,                    # x range
+    0:0.001:1,                    # t range
+    ((x, t) -> Ψ(x, t, 1, 1, 1)), # function to evaluate
+    fill=true,                    # fill the contours in instead of lines
+    aspect_ratio=:equal)          # for a square plot
 
     display(p)
 
