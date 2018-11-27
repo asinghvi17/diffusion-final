@@ -16,7 +16,7 @@
 
 include.(["h.jl"])
 
-function Ψ(x::Real, t::Real, a=1, b=1, D=1)
+function Ψ(x::Real, t::Real, a=1, b=1, D=1)  # analytical solution
     return cos(a*x)*exp(-b*t)
 end
 
