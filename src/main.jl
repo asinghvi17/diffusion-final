@@ -20,6 +20,8 @@ function Ψ(x::Real, t::Real, a=1, b=1, D=1)
     return cos(a*x)*exp(-b*t)
 end
 
+Ψ(x, t) = Ψ(x, t, 1, 1, 1) # just setting defaults
+
 function main()
 
     gr();   # set the plot backend; for publication figures, use pgfplots.
@@ -32,7 +34,7 @@ function main()
     p = contour(
     0:0.001:1,                    # x range
     0:0.001:1,                    # t range
-    ((x, t) -> Ψ(x, t, 1, 1, 1)), # function to evaluate
+    Ψ,                            # function to evaluate
     fill=true,                    # fill the contours in instead of lines
     aspect_ratio=:equal)          # for a square plot
 
