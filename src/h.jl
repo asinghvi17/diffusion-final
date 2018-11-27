@@ -12,9 +12,9 @@ using   Plots,                    # for plotting
 # define Cell struct and methods related to it.
 mutable struct cell{T} <: Real
 
-    Q    :: T   # heat
+    Q :: T   # heat
 
-    D    :: T   # positive nonzero - heat capacity of that material
+    D :: T   # positive nonzero - heat capacity of that material
 
 end
 
