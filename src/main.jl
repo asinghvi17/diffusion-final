@@ -1,5 +1,7 @@
 #!/usr/bin/env julia
 
+# add flags: -O3 --compile=all
+
 # DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 #         Version 2, December 2004
 #
@@ -13,8 +15,6 @@
 # TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 #
 # 0. You just DO WHAT THE FUCK YOU WANT TO.
-
-# add flags: -O3 --compile=all
 
 ###
 # ordinary differential equation of diffusion:
@@ -43,12 +43,12 @@ function main()
     theme(:dark)
     a::Int = 1; # constant in cosine
     b::Int = 1; # constant in exponential
-    D::Int = 2; # diffucion constant
+    D::Int = 300; # diffucion constant
 
     p = contour(
     0:0.001:1,                    # x range
     0:0.001:1,                    # t range
-    Ψ,                            # function to evaluate
+    ((x, t) -> Ψ(x, t, a, b, D)),                            # function to evaluate
     fill=true,                    # fill the contours in instead of lines
     aspect_ratio=:equal)          # for a square plot
 

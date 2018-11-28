@@ -25,7 +25,7 @@ using   Plots,                    # for plotting
 
 
 # define Cell struct and methods related to it.
-mutable struct Block {T}
+mutable struct Block{T}
 
     Q :: T   # heat
 
@@ -33,4 +33,4 @@ mutable struct Block {T}
 
 end
 
-@recipe f(::Type{cell}, c::cell) = c.Q/c.D
+@recipe f(::Type{Block}, c::Block) = c.Q/c.D
