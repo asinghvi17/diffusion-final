@@ -26,7 +26,7 @@ Implement a diffusion animator
 
 Solve numerically, using RK4 or other methods
 
-Use a 'cell method' for 2 or 3 dimensions, where the material is discretized into 'cells', described by structs with material properties.  Or, continuously sample from functions - more computationally intensive, though.
+Use a 'cell method' for 2 or 3 dimensions, where the material is discretized into 'cells', described by structs with material properties.  Then use the implicit finite difference method to
 
 
 Store data using the Julia Plots.jl backend HDF5, which writes data into a file that can be easily plotted later.

@@ -43,14 +43,15 @@ function main()
     theme(:dark)
     a::Int = 1; # constant in cosine
     b::Int = 1; # constant in exponential
-    D::Int = 300; # diffucion constant
+    D::Int = 300; # diffusion constant
 
     p = contour(
-    0:0.001:1,                    # x range
-    0:0.001:1,                    # t range
-    ((x, t) -> Ψ(x, t, a, b, D)),                            # function to evaluate
-    fill=true,                    # fill the contours in instead of lines
-    aspect_ratio=:equal)          # for a square plot
+    0:0.001:1,                            # x range
+    0:0.001:1,                            # t range
+    ((x, t) -> Ψ(x, t, a, b, D)),         # function to evaluate
+    fill=true,                            # fill the contours in instead of lines
+    aspect_ratio=:equal                   # for a square plot
+    )
 
     display(p)
 
