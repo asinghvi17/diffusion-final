@@ -26,6 +26,31 @@ function step_1s_p(
     return ret.data
 end
 
+"""
+    step_1s_p_e(arr)
+
+This function will step a periodic array of Blocks in one spatial dimension by 1 time-increment.
+It assumes that arr is periodic, i.e., that the neighbours of arr[end] are arr[end-1] and arr[1].
+It will iterate from 1 to the end of the array.
+"""
+function step_1s_p_e(
+    a
+    )
+
+    k = 1
+    h = 1
+    r = k/h^2
+
+    arr = CircularArray(a)
+    ret = deepcopy(arr); # copy the contents of arr into ret, to avoid len(arr) constructor calls
+    la = length(a)
+
+    for i ∈ 1:1:(la)
+        ret[i].T = (1-2*r)*arr[i + 1].T + r*arr[i-1].T + r*arr[i+1].T
+    end
+
+    return ret.data
+end
 # Begin test section - remove this after done
 
 # a = [Block(1, 1), Block(0, 1), Block(0, 1), Block(0, 1), Block(0, 1), Block(0, 1)]
