@@ -26,7 +26,7 @@ Implement a diffusion animator
 
 We solve the one-dimensional case numerically, using a backward-time centered-space 'implicit' method of solving a system.  Currently, only the Dirichlet, one-dimensional case has been implemented.
 
-The two-dimensional case is planned for the ω release, but since we are currently on a version so close to zero as to be undefined, it is being neglected.  The method, however, is simple - it is an extension, in fact, of the one-dimensional case - as is the three-dimensional case, although this has vast memory requirements.
+The two-dimensional case is planned for the ω release, but since we are currently on version `dVersion`, it is being neglected.  The method, however, is simple - it is an extension, in fact, of the one-dimensional case - as is the three-dimensional case, although this has vast memory requirements.
 
 As for plotting, it is planned to store the plots in the `.hdf5` format to allow for easy replotting.
 
