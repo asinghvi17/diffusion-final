@@ -27,16 +27,21 @@ include.(["h.jl"])
 # We will deal with matrices, since they are better to use and express this kind of thing more simply.
 # We begin by defining the matrix A, which will serve as the weight matrix for our system.
 
-function main()
-    L = 2.5             # the length of the grid
-    Δx = 0.1          # the space step in one dimension
-    nx = length(0:Δx:L)         # the dimension of the matrix
-    tm = 100
-    Δt = 0.1          # the time step
-
-    D = 0.05          # the thermal diffusivity of the medium
+function doDirichlet(
+    # DEFAULT ARGS
+    xm,        # the max position (position goes from 0 to sm)
+    Δx,        # the space step
+    tm,        # the max time (time goes from 0 to tm)
+    Δt;        # the time step
+    # KWARGS
+    D = 0.05,          # the thermal diffusivity of the medium
+    Tl = 10,           # the temperature on the leftmost node, a Dirichlet boundary condition
+    Tr = 10,           # the temperature on the rightmost node, a Dirichlet boundary condition
+    b = zeros(Int(xm / Δx)) # the initial distribution
+    )
 
     r = D*Δt/Δx^2     # the constant of implicit difference - should be less than one half for best results.
+    nx = length(0:Δx:xm)         # the dimension of the matrix
 
     ds = -1*ones(nx-1)*r
     di = ds
@@ -44,12 +49,6 @@ function main()
 
     A = Tridiagonal(ds, dm, di)
 
-    Di = Diagonal(ones(nx)*0.9)
-
-    # Now, we will set boundary conditions.  In particular, these are Dirichlet boundary conditions, meaning that the temperature on each end is held constant.  In this case, we will chooose to set them both to a predefined temperature of 10, for simplicity's sake.
-
-    Tl = 10
-    Tr = 10
 
     A[1, 1] = 1
     A[end, end] = 1
@@ -66,16 +65,16 @@ function main()
     b[end] = Tr
 
     anim = @animate for i ∈ 0:Δt:tm
-        x = inv(A)*Di*b
+        x = inv(A)*b
         b = x
         b[1]   = Tl
         b[end] = Tr
         p = scatter(
-        0:Δx:L, b,
+        0:Δx:xm, b,
         title = "t=$(string(i)[1:min(end, 4)])",
         xlabel="x",
         ylabel="T",
-        ylims = (0, 10.2)
+        ylims = (0, max(Tl, Tr) + 1)
         )
     end
 
@@ -83,4 +82,4 @@ function main()
 
 end
 
-main()
+doDirichlet(2.5, 0.1, 20, 0.1, D = 0.01, Tl = 3, Tr = 4)
