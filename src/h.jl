@@ -35,4 +35,4 @@ end
 
 # This recipe governs the value that Plots.jl will extract out of a Block object.
 
-@recipe f(::Type{Block}, c::Block) = c.Q/c.D
+@recipe f(::Type{Block}, b::Block) = b.Q/b.D
