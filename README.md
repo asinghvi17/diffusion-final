@@ -24,9 +24,14 @@ Implement a diffusion animator
 
 # Method
 
-Solve numerically, using RK4 or other methods
+We solve the one-dimensional case numerically, using a backward-time centered-space 'implicit' method of solving a system.  Currently, only the Dirichlet, one-dimensional case has been implemented.
 
-Use a 'cell method' for 2 or 3 dimensions, where the material is discretized into 'cells', described by structs with material properties.  Then use the implicit finite difference method to
+The two-dimensional case is planned for the ω release, but since we are currently on a version so close to zero as to be undefined, it is being neglected.  The method, however, is simple - it is an extension, in fact, of the one-dimensional case - as is the three-dimensional case, although this has vast memory requirements.
 
+As for plotting, it is planned to store the plots in the `.hdf5` format to allow for easy replotting.
 
-Store data using the Julia Plots.jl backend HDF5, which writes data into a file that can be easily plotted later.
+# Terminology
+
+A *Dirichlet boundary condition* is a boundary condition that forces the temperature on the edges of a system to be a certain value.  
+
+A *Neumann boundary condition* is a boundary condition that forces the flux on the edges of a system to be a certain value, i.e., that there is a constant flow of heat outwards.  
