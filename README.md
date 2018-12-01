@@ -30,6 +30,8 @@ AN example of this case is shown in the following animation, where a system in w
 
 ![See the gif here](example/lol.gif "Logo Title Text 1")
 
+Note that in this case, there is no heat loss to the outside.
+
 The two-dimensional case is planned for the ω release, but since we are currently on version `dVersion`, it is being neglected.  The method, however, is simple - it is an extension, in fact, of the one-dimensional case - as is the three-dimensional case, although this has vast memory requirements.
 
 As for plotting, it is planned to store the plots in the `.hdf5` format to allow for easy replotting.
