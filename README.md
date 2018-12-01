@@ -35,3 +35,7 @@ As for plotting, it is planned to store the plots in the `.hdf5` format to allow
 A *Dirichlet boundary condition* is a boundary condition that forces the temperature on the edges of a system to be a certain value.  
 
 A *Neumann boundary condition* is a boundary condition that forces the flux on the edges of a system to be a certain value, i.e., that there is a constant flow of heat outwards.  
+
+
+# Julia installation instructions
+See [Julia homepage](https://julialang.org/)
