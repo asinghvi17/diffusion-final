@@ -21,21 +21,22 @@ using   Plots,                    # for plotting
         PlotThemes,               # to theme plots - :dark, :wong, :lime
         ProgressMeter,            # just for lulz
         StatsBase,                # histogram
-        DifferentialEquations     # diffyq solve
+        LinearAlgebra             # to solve the matrix equations
 
+gr() # set Plots.jl backend
 
 # define Cell struct and methods related to it.
 mutable struct Block{T}
 
-    Q :: T   # heat
+    T :: T   # temperature
 
-    D :: T   # positive nonzero - heat capacity of that material
+    D :: T   # diffusivity of the material
 
 end
 
 # This recipe governs the value that Plots.jl will extract out of a Block object.
 
-@recipe f(::Type{Block}, b::Block) = b.Q/b.D
+@recipe f(::Type{Block}, b::Block) = b.T
 
 struct CircularArray{T} <: AbstractArray{T,1}
     data::AbstractArray{T,1}
