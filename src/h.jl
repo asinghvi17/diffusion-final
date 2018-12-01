@@ -36,3 +36,18 @@ end
 # This recipe governs the value that Plots.jl will extract out of a Block object.
 
 @recipe f(::Type{Block}, b::Block) = b.Q/b.D
+
+struct CircularArray{T} <: AbstractArray{T,1}
+    data::AbstractArray{T,1}
+end
+
+circindex(i::Int,N::Int) = 1 + mod(i-1,N)
+circindex(I,N::Int) = [circindex(i,N)::Int for i in I]
+
+Base.size(A::CircularArray) = size(A.data)
+
+Base.getindex(A::CircularArray, i::Int) = getindex(A.data, circindex(i,length(A.data)))
+Base.getindex(A::CircularArray, I) = getindex(A.data, circindex(I,length(A.data)))
+
+Base.setindex!(A::CircularArray, v, i::Int) = setindex!(A.data, v, circindex(i,length(A.data)))
+Base.setindex!(A::CircularArray, v, I) = setindex!(A.data, v, circindex(I,length(A.data)))
