@@ -43,7 +43,7 @@ function doDirichlet(
     b[end] = Tr
 
     anim = @animate for i ∈ 0:Δt:tm
-        x = inv(A)*b
+        x = A \ b
         b = x
         b[1]   = Tl
         b[end] = Tr
