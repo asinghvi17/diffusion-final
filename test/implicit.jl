@@ -1,6 +1,8 @@
 # The implicit heat diffusion solver uses a backward-time, centered-space method to obtain a recurrence equation which must be solved.
 
-include.(["h.jl"])
+include.(["../src/h.jl"])
+
+pgfplots()
 
 # We will deal with matrices, since they are better to use and express this kind of thing more simply.
 # We begin by defining the matrix A, which will serve as the weight matrix for our system.
@@ -18,7 +20,7 @@ function doDirichlet(
     b = zeros(Int(xm / Δx) + 1), # the initial distribution
     anim_func = Plots.gif
     )
-
+    
     r = D*Δt/Δx^2     # the constant of implicit difference - should be less than one half for best results.
     nx = length(0:Δx:xm)         # the dimension of the matrix
 

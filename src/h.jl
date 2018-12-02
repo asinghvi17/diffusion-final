@@ -21,7 +21,8 @@ using   Plots,                    # for plotting
         PlotThemes,               # to theme plots - :dark, :wong, :lime
         ProgressMeter,            # just for lulz
         StatsBase,                # histogram
-        LinearAlgebra             # to solve the matrix equations
+        LinearAlgebra,            # to solve the matrix equations
+        SymPy                     # for them symbols
 
 gr() # set Plots.jl backend
 
@@ -37,3 +38,7 @@ end
 # This recipe governs the value that Plots.jl will extract out of a Block object.
 
 @recipe f(::Type{Block}, b::Block) = b.T
+
+# This governs what happens when a Block object is multiplied by a value of type Symbolic
+
+Base.zero(::Type{Symbol}) = x -> 0

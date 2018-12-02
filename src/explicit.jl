@@ -2,60 +2,75 @@
 
 include.(["h.jl"])
 
-"""
-    step_1s_p(arr)
-
-This function will step a periodic array of Blocks in one spatial dimension by 1 time-increment.
-It assumes that arr is periodic, i.e., that the neighbours of arr[end] are arr[end-1] and arr[1].
-It will iterate from 1 to the end of the array.
-"""
-function step_1s_p(
-    arr
+function apply(
+    a,
+    b
     )
 
-    k = 1
-    h = 1
-    r = k/h^2
-    ret = deepcopy(arr); # copy the contents of arr into ret, to avoid len(arr) constructor calls
-    lA0 = length(arr) - 1
+    transpose([a[i](b[i]) for i ∈ 1:length(b)])
 
-    for i ∈ 0:1:(lA0)
-        k = (1-2*r)*arr[i + 1].Q + r*arr[((i - 1) % lA0) + 1].Q + r*arr[((i + 1) % lA0) + 1].Q
-    end
-
-    return ret.data
 end
-
-"""
-    step_1s_p_e(arr)
-
-This function will step a periodic array of Blocks in one spatial dimension by 1 time-increment.
-It assumes that arr is periodic, i.e., that the neighbours of arr[end] are arr[end-1] and arr[1].
-It will iterate from 1 to the end of the array.
-"""
-function step_1s_p_e(
-    a
+function doVariableDirichlet(
+    # DEFAULT ARGS
+    xm,        # the max position (position goes from 0 to sm)
+    Δx,        # the space step
+    tm,        # the max time (time goes from 0 to tm)
+    Δt,        # the time step
+    b;         # the initial distribution
+    # KWARGS
+    Tl = 10,           # the temperature on the leftmost node, a Dirichlet boundary condition
+    Tr = 10,           # the temperature on the rightmost node, a Dirichlet boundary condition
+    anim_func = Plots.gif
     )
 
-    k = 1
-    h = 1
-    r = k/h^2
+    @syms r                      # the constant of implicit difference - should be less than one half for best results.
+    nx = length(0:Δx:xm)         # the dimension of the matrix
 
-    arr = CircularArray(a)
-    ret = deepcopy(arr); # copy the contents of arr into ret, to avoid len(arr) constructor calls
-    la = length(a)
+    fs(x::Block) = x.T
+    fd(x) = fs(x)
+    fm(x::Block) = x.T - 2*x.D*Δt/Δx^2*x.T
 
-    for i ∈ 1:1:(la)
-        ret[i].T = (1-2*r)*arr[i + 1].T + r*arr[i-1].T + r*arr[i+1].T
+    ds = ones(nx-1)
+    di = ds
+    dm = ones(nx)*(-2)
+
+    M = Tridiagonal(ds, dm, di)                # matrix of the k-depoendent weights
+
+    K = Diagonal([x.D*Δt/Δx^2 for x ∈ b])
+
+    A = K*M + I                                # matrix of the k-independent weights
+
+    A[1, 1] = x -> x.T
+    A[end, end] = x -> x.T
+
+    # THe definition of the A matrix is now complete.
+
+    # Now, we can proceed to defining the vectors.
+    # x is the vector of temperatures at time=n+1
+    # b is the vector of temperatures at time=n.
+
+    # implement boundary contitions
+    b[1].T   = Tl
+    b[end].T = Tr
+
+    anim = @animate for i ∈ 0:Δt:tm
+        x = A \ b
+        b = x
+        b[1].T   = Tl
+        b[end].T = Tr
+        p = scatter(
+        0:Δx:xm, b,
+        title = "t=$(string(i)[1:min(end, 4)])",
+        xlabel="x",
+        ylabel="T",
+        ylims = (0, max(Tl, Tr) + 1)
+        )
     end
 
-    return ret.data
-end
-# Begin test section - remove this after done
+    p = anim_func(anim, "lol", fps=30)
 
-# a = [Block(1, 1), Block(0, 1), Block(0, 1), Block(0, 1), Block(0, 1), Block(0, 1)]
-# b = deepcopy(a)
-# for i in 1:10
-#     print(map(x -> Base.string(x.Q/x.D)*" ", a))
-#     a = step_1s_p(a)
-# end
+end
+
+b = [Block(0, 0.01*i) for i ∈ 1:nx]
+
+doVariableDirichlet()
