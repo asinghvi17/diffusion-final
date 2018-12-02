@@ -75,7 +75,7 @@ function doVariableDirichlet( # Ladri di dirichlette
     Tr = 10,           # the temperature on the rightmost node, a Dirichlet boundary condition
     anim_func = Plots.gif,
     fname = "lolv.gif",
-    fps = 120
+    fps = 30
     )
 
     nx = length(0:Δx:xm)         # the dimension of the matrix
@@ -89,8 +89,6 @@ function doVariableDirichlet( # Ladri di dirichlette
     K = Diagonal([x.D*Δt/Δx^2 for x ∈ bb])
 
     A = K*M + I                                # matrix of the k-independent weights
-
-    A *= 2
 
     A[1, 1] = 1
     A[end, end] = 1
@@ -108,6 +106,9 @@ function doVariableDirichlet( # Ladri di dirichlette
     b[1]   = Tl
     b[end] = Tr
 
+    ymax = maximum(b)
+    ymin = minimum(b)
+
     anim = @animate for i ∈ 0:Δt:tm
         x = A \ b
         b = x
@@ -118,12 +119,20 @@ function doVariableDirichlet( # Ladri di dirichlette
         title = "t=$(string(i)[1:min(end, 4)])",
         xlabel="x",
         ylabel="T",
-        ylims = (0, max(Tl, Tr) + 1)
+        legend=:none,
+        ylims = (ymin-1, ymax+1)
         )
-    end
+    end every 1
 
     p = anim_func(anim, fname, fps=fps)
 
 end
 
-doVariableDirichlet(2.5, 0.1, 300, 0.1, [Block(0.0, 0.001*i) for i ∈ 1:length(0:0.1:2.5)], Tl = 10, Tr = 10)
+
+a = [Block(20.0, 0.01) for i ∈ 1:length(0:0.1:2.5)]
+
+for i in 9:17
+    a[i].T = 30
+end
+
+doVariableDirichlet(2.5, 0.1, 500, 0.1, a, Tl = 10, Tr = 10)

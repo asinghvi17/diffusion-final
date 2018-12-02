@@ -17,40 +17,26 @@ function doVariableDirichlet(
 
     nx = length(0:Δx:xm)         # the dimension of the matrix
 
-    ds = ones(nx-1)
-    di = ds
-    dm = ones(nx)*(-2)
-
-    M = Tridiagonal(ds, dm, di)                # matrix of the k-depoendent weights
-
-    K = Diagonal([x.D*Δt/Δx^2 for x ∈ b])
-
-    A = K*M + I                                # matrix of the k-independent weights
-
-    A[1, 1] = x -> x.T
-    A[end, end] = x -> x.T
-
     # THe definition of the A matrix is now complete.
 
     # Now, we can proceed to defining the vectors.
     # x is the vector of temperatures at time=n+1
     # b is the vector of temperatures at time=n.
 
-    # implement boundary contitions
-    b[1].T   = Tl
-    b[end].T = Tr
 
     anim = @animate for i ∈ 0:Δt:tm
-        x = A * b
+        for i ∈ 2:length(b)-1
+            x[i].T = (1-2*b[i].D*Δt/Δx^2)*b[i].T + b[i+1].D*Δt/Δx^2*b[i+1].T + b[i-1].D*Δt/Δx^2*b[i-1].T
+        end
+        x[1].T   = b[1].T
+        x[end].T = b[end].T
         b = x
-        b[1].T   = Tl
-        b[end].T = Tr
         p = scatter(
         0:Δx:xm, b,
         title = "t=$(string(i)[1:min(end, 4)])",
         xlabel="x",
         ylabel="T",
-        ylims = (0, max(Tl, Tr) + 1)
+        # ylims = (0, max(Tl, Tr) + 1)
         )
     end
 
@@ -58,6 +44,8 @@ function doVariableDirichlet(
 
 end
 
-b = [Block(0, 0.01*i) for i ∈ 1:nx]
+b = [Block(0, 0.01) for i ∈ 1:nx]
+
+b[]
 
 doVariableDirichlet()
