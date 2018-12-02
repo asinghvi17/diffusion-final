@@ -2,14 +2,6 @@
 
 include.(["h.jl"])
 
-function apply(
-    a,
-    b
-    )
-
-    transpose([a[i](b[i]) for i ∈ 1:length(b)])
-
-end
 function doVariableDirichlet(
     # DEFAULT ARGS
     xm,        # the max position (position goes from 0 to sm)
@@ -23,12 +15,7 @@ function doVariableDirichlet(
     anim_func = Plots.gif
     )
 
-    @syms r                      # the constant of implicit difference - should be less than one half for best results.
     nx = length(0:Δx:xm)         # the dimension of the matrix
-
-    fs(x::Block) = x.T
-    fd(x) = fs(x)
-    fm(x::Block) = x.T - 2*x.D*Δt/Δx^2*x.T
 
     ds = ones(nx-1)
     di = ds
@@ -54,7 +41,7 @@ function doVariableDirichlet(
     b[end].T = Tr
 
     anim = @animate for i ∈ 0:Δt:tm
-        x = A \ b
+        x = A * b
         b = x
         b[1].T   = Tl
         b[end].T = Tr
