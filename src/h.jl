@@ -23,7 +23,7 @@ using   Plots,                    # for plotting
         StatsBase,                # histogram
         LinearAlgebra             # to solve the matrix equations
 
-gr() # set Plots.jl backend
+plotlyjs() # set Plots.jl backend
 
 # define Cell struct and methods related to it.
 mutable struct Block{T}
