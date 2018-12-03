@@ -75,7 +75,8 @@ function doVariableDirichlet( # Ladri di dirichlette
     Tr = 10,           # the temperature on the rightmost node, a Dirichlet boundary condition
     anim_func = Plots.gif,
     fname = "lolv.gif",
-    fps = 30
+    fps = 30,
+    nf = 1
     )
 
     nx = length(0:Δx:xm)         # the dimension of the matrix
@@ -122,7 +123,7 @@ function doVariableDirichlet( # Ladri di dirichlette
         legend=:none,
         ylims = (ymin-1, ymax+1)
         )
-    end every 1
+    end every nf
 
     p = anim_func(anim, fname, fps=fps)
 

@@ -21,8 +21,7 @@ using   Plots,                    # for plotting
         PlotThemes,               # to theme plots - :dark, :wong, :lime
         ProgressMeter,            # just for lulz
         StatsBase,                # histogram
-        LinearAlgebra,            # to solve the matrix equations
-        SymPy                     # for them symbols
+        LinearAlgebra             # to solve the matrix equations
 
 gr() # set Plots.jl backend
 
