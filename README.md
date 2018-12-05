@@ -38,6 +38,10 @@ Below is an example of the Neumann boundary condition, with a flux of 0.1 temper
 
 ![Neumann with flux out=0.1 per timestep](example/NeumannOut.11D.gif "Logo Title Text 1")
 
+Below is an example of a mixed boundary condition - the flux on the left is constant, and the temperature on the right is fixed.
+
+![Neumann-DIrichlet](example/neumannLdirichletR.gif "Logo Title Text 1")
+
 The two-dimensional case, using an alternating-direction implicit solver scheme, is planned for the ω release, but since we are currently on version `0.1`, it is being neglected.  The method, however, is simple - it is an extension, in fact, of the one-dimensional case - as is the three-dimensional case, although this has vast memory requirements.
 
 As for plotting, it is planned to store the plots in the `.hdf5` format to allow for easy replotting.
