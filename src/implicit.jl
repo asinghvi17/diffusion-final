@@ -2,16 +2,20 @@
 
 include.(["h.jl"])
 
+function getT(x::Block)
+    x.T
+end
+
 function simulate( # Ladri di dirichlette
                     # DEFAULT ARGS
                     xm::Real,        # the max position (position goes from 0 to sm)
                     Δx::Real,        # the space step
                     tm::Real,        # the max time (time goes from 0 to tm)
                     Δt::Real,        # the time step
-                    bb::Real,        # the initial distribution
+                    bb,        # the initial distribution
                     bl::Real,        # numerical value of left BC
-                    br::Real,        # numerical value of right BC
                     tbl::Symbol,     # type of left BC - :flux or :temp
+                    br::Real,        # numerical value of right BC
                     tbr::Symbol;     # type of right BC - :flux or :temp
                     # KWARGS
                     anim_func = Plots.gif,
@@ -32,7 +36,7 @@ function simulate( # Ladri di dirichlette
 
     M = Tridiagonal(ds, dm, di)                # matrix of the k-depoendent weights
 
-    K = Diagonal([x.D*Δt/Δx^2 for x ∈ bb])
+    K = Diagonal((x -> x.D*Δt/Δx^2).(bb))
 
     A = K*M + I                                # matrix of the k-independent weights
 
@@ -56,18 +60,18 @@ function simulate( # Ladri di dirichlette
 
     # implement boundary contitions
 
-    b = map(x -> x.T, bb)
+    b = getT.(bb)
 
     ymax = maximum(b)
     ymin = minimum(b)
 
     if tbr == :temp
-        ymax = max(ymax, tbr)
-        ymin = max(ymin, tbr)
+        ymax = max(ymax, br)
+        ymin = max(ymin, br)
     end
     if tbl == :temp
-        ymax = max(ymax, tbl)
-        ymin = max(ymin, tbl)
+        ymax = max(ymax, bl)
+        ymin = max(ymin, bl)
     end
 
     pm = Progress(length(0:Δt:tm), desc="Animating", )
@@ -127,4 +131,4 @@ for i in 9:17
     a[i].T = 30
 end
 
-simulate(2.5, 0.1, 4000, 0.1, a, bl = .1, tbl = :flux, br = 20, tbr = :temp, nf = 10, fname="lolnvf.gif")
+simulate(2.5, 0.1, 4000.0, 0.1, a, .1, :flux, 20, :temp, nf = 10, fname="lolnvf.gif")
