@@ -26,17 +26,33 @@ using   Plots,                    # for plotting
 plotlyjs() # set Plots.jl backend
 
 # define Cell struct and methods related to it.
-mutable struct Block{T}
+mutable struct Block1D{T}
 
     T :: T   # temperature
 
     D :: T   # diffusivity of the material
 
+    Δx:: T   # length of the material
+
+end
+
+mutable struct Block2D{T}
+
+    T :: T   # temperature
+
+    D :: T   # diffusivity of the material
+
+    Δx:: T   # length of the material
+
+    Δy:: T   # length of the material
+
 end
 
 # This recipe governs the value that Plots.jl will extract out of a Block object.
 
-@recipe f(::Type{Block}, b::Block) = b.T
+@recipe f(::Type{Block1D}, b::Block1D) = b.T
+
+@recipe f(::Type{Block2D}, b::Block2D) = b.T
 
 # This governs what happens when a Block object is multiplied by a value of type Symbolic
 

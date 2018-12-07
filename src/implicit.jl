@@ -2,21 +2,19 @@
 
 include.(["h.jl"])
 
-function getT(x::Block)
+function getT(x::Block1D)
     x.T
 end
 
 function simulate( # Ladri di dirichlette
                     # DEFAULT ARGS
-                    xm::Real,        # the max position (position goes from 0 to sm)
-                    Δx::Real,        # the space step
-                    tm::Real,        # the max time (time goes from 0 to tm)
-                    Δt::Real,        # the time step
-                    bb,        # the initial distribution
-                    bl::Real,        # numerical value of left BC
-                    tbl::Symbol,     # type of left BC - :flux or :temp
-                    br::Real,        # numerical value of right BC
-                    tbr::Symbol;     # type of right BC - :flux or :temp
+                    bb,                        # the initial distribution
+                    tm::Real,                  # the max time (time goes from 0 to tm)
+                    Δt::Real,                  # the time step
+                    bl::Real,                  # numerical value of left BC
+                    tbl::Symbol,               # type of left BC - :flux or :temp
+                    br::Real,                  # numerical value of right BC
+                    tbr::Symbol;               # type of right BC - :flux or :temp
                     # KWARGS
                     anim_func = Plots.gif,
                     fname::String = "lolnv.gif",
@@ -28,7 +26,12 @@ function simulate( # Ladri di dirichlette
         return "Lol noob"
     end
 
-    nx = length(0:Δx:xm)         # the dimension of the matrix
+    nx = length(bb)         # the dimension of the matrix
+
+    xs = zeros(length(bb))
+    for i in 2:length(bb)
+        xs[i] = bb[i].Δx + xs[i-1]
+    end
 
     ds = ones(nx-1)*-1
     di = deepcopy(ds)
@@ -36,21 +39,9 @@ function simulate( # Ladri di dirichlette
 
     M = Tridiagonal(ds, dm, di)                # matrix of the k-depoendent weights
 
-    K = Diagonal((x -> x.D*Δt/Δx^2).(bb))
+    K = Diagonal((B -> B.D*Δt/B.Δx^2).(bb))
 
     A = K*M + I                                # matrix of the k-independent weights
-
-    if tbl == :temp
-        A[1, 1] = 1
-    else
-        A[1, 2] *= 2
-    end
-
-    if tbr == :temp
-        A[end, end] = 1
-    else
-        A[end, end-1] *= 2
-    end
 
     # THe definition of the A matrix is now complete.
 
@@ -68,10 +59,16 @@ function simulate( # Ladri di dirichlette
     if tbr == :temp
         ymax = max(ymax, br)
         ymin = max(ymin, br)
+        A[end, end] = 1
+    else
+        A[end, end-1] *= 2
     end
     if tbl == :temp
         ymax = max(ymax, bl)
         ymin = max(ymin, bl)
+        A[1, 1] = 1
+    else
+        A[1, 2] *= 2
     end
 
     pm = Progress(length(0:Δt:tm), desc="Animating", )
@@ -79,13 +76,13 @@ function simulate( # Ladri di dirichlette
     anim = @animate for i ∈ 0:Δt:tm
 
         if tbl == :flux
-            Lc = 2*Δx*bl/b[1]
+            Lc = 2*bb[1].Δx*bl/b[1]
         else
             Lc = 0
         end
 
         if tbr == :flux
-            Rc = 2*Δx*br/b[end]
+            Rc = 2*bb[end].Δx*br/b[end]
         else
             Rc = 0
         end
@@ -111,7 +108,7 @@ function simulate( # Ladri di dirichlette
 
 
         p = scatter(
-        0:Δx:xm, b,
+        xs, b,
         title = "t=$(string(i)[1:min(end, 4)])",
         xlabel="x",
         ylabel="T",
@@ -125,10 +122,10 @@ function simulate( # Ladri di dirichlette
 
 end
 
-a = [Block(20.0, 0.01) for i ∈ 1:length(0:0.1:2.5)]
+a = [Block1D(20.0, 0.01, 0.1) for i ∈ 1:length(0:0.1:25)]
 
-for i in 9:17
+for i in 63:187
     a[i].T = 30
 end
 
-simulate(2.5, 0.1, 4000.0, 0.1, a, .1, :flux, 20, :temp, nf = 10, fname="lolnvf.gif")
+simulate(a, 500.0, 0.1, .1, :flux, 20, :temp, nf = 50, fname="lolnvf.gif")
