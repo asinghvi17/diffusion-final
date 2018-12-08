@@ -25,8 +25,10 @@ using   Plots,                    # for plotting
 
 plotlyjs() # set Plots.jl backend
 
+import Base.*
+
 # define Cell struct and methods related to it.
-mutable struct Block1D{T}
+mutable struct Block1D{T <: Real}
 
     T :: T   # temperature
 
@@ -36,7 +38,7 @@ mutable struct Block1D{T}
 
 end
 
-mutable struct Block2D{T}
+mutable struct Block2D{T <:Real}
 
     T :: T   # temperature
 
@@ -52,8 +54,65 @@ end
 
 @recipe f(::Type{Block1D}, b::Block1D) = b.T
 
-@recipe f(::Type{Block2D}, b::Block2D) = b.T
+# @recipe f(::Type{Block2D}, bb::Block2D)
+#
+# xs = zeros(length(bb))
+# for i in 2:length(bb)
+#     xs[i] = bb[i].Δx + xs[i-1]
+# end
+#
+# ys = zeros(length(bb))
+# for i in 2:length(bb)
+#     ys[i] = bb[i].Δy + ys[i-1]
+# end
+#
+#
+# end
 
 # This governs what happens when a Block object is multiplied by a value of type Symbolic
 
 Base.zero(::Type{Symbol}) = x -> 0
+
+# a matrix of conditions would do for this particular thing - apply the matrix to the Blocks elementwise.
+
+struct BoundaryCondition
+
+    val::Real
+
+    type::Symbol
+
+end
+
+# now, define the behaviour of the BoundaryCOndition and Block structs
+
+*(a::BoundaryCondition, b::Block1D{<:Real}) = begin
+    if a.type ∈ (:temp, :flux)
+        if a.type == :temp
+            b.T = a.val
+            return b
+        else
+            b.T -= a.val*(2*b.Δx)
+            return b
+        end
+    else
+        return b
+    end
+end
+
+*(b::Block1D, a::BoundaryCondition) = Base.*(a, b)
+
+*(a::BoundaryCondition, b::Block2D) = begin
+    if a.type ∈ (:temp, :flux)
+        if a.type == :temp
+            b.T = a.val
+            return b
+        else
+            b.T -= a.val*(b.Δx+b.Δy)
+            return b
+        end
+    else
+        return b
+    end
+end
+
+*(b::Block2D, a::BoundaryCondition) = Base.*(a, b)
