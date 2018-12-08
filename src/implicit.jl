@@ -43,7 +43,7 @@ function simulate( # Ladri di dirichlette
 
     A = K*M + I                                # matrix of the k-independent weights
 
-    # THe definition of the A matrix is now complete.
+    # The definition of the A matrix is now complete.
 
     # Now, we can proceed to defining the vectors.
     # x is the vector of temperatures at time=n+1
