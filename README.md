@@ -40,9 +40,11 @@ Below is an example of the Neumann boundary condition, with a flux of 0.1 temper
 
 Below is an example of a mixed boundary condition - the flux on the left is constant, and the temperature on the right is fixed.
 
-![Neumann-DIrichlet](example/neumannLdirichletR.gif "Logo Title Text 1")
+![Neumann-Dirichlet](example/neumannLdirichletR.gif "Logo Title Text 1")
 
-The two-dimensional case, using an alternating-direction implicit solver scheme, is planned for the ω release, but since we are currently on version `0.1`, it is being neglected.  The method, however, is simple - it is an extension, in fact, of the one-dimensional case - as is the three-dimensional case, although this has vast memory requirements.
+The two-dimensional case, in order to save memory, uses an alternating-direction implicit solver.  The problem is solved first for time n+⅟₂ either explicitly or implicitly along the x-axis, and then using the other method along the other axis.  An example of 2D diffusion with this is below: it has a flux of 0.1 K per timestep out of the system on the left, and a stable-temperature state of 20 K on the right.
+
+![Neumann-Dirichlet](example/2d-dirichletRneumannL.gif "Logo Title Text 1")
 
 As for plotting, it is planned to store the plots in the `.hdf5` format to allow for easy replotting.
 
