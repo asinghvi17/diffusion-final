@@ -154,7 +154,8 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
 
     pm = Progress(length(0:Δt:tm), desc="Animating")
 
-    p = @animate for t ∈ 0:Δt:tm
+    p = Animation()
+    for t ∈ 0:Δt:tm
 
         # pre-apply boundary conditions.
 
@@ -176,20 +177,25 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
 
         # apply BCs
 
-        counter = counter + 1
+        if counter % nf == 0
 
-        heatmap(
-        xstr,
-        ystr,
-        getT.(v),
-        title = "t=$(string(t)[1:min(end, 4)])",
-        xlabel="x",
-        ylabel="y",
-        fill=true,
-        clims=(0, 30)
-        )
+            heatmap(
+            xstr,
+            ystr,
+            getT.(v),
+            title = "t=$(string(t)[1:min(end, 4)])",
+            xlabel="x",
+            ylabel="y",
+            fill=true,
+            clims=(0, 30),
+            aspect_ratio=1
+            )
+            frame(p)
+
+        end
         next!(pm)
-    end every nf
+        counter = counter + 1
+    end
 
     anim_func(p, fname, fps=fps)
 
@@ -222,7 +228,7 @@ simulate(a, 50.0, 0.1, bcs, fname="lol2d-nfsyconvωεϕ.gif", nf = 10)
 # For testing do
 anim_func = Plots.gif
 fname = "lol2d-nfsyconv.gif"
-fps = 30
+fps = 30z
 nf = 1
 bb = deepcopy(a)
 tm = 5.0
