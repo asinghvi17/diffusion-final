@@ -38,13 +38,12 @@ function applyBC!(block, bc)
             block.T = block.T - bc.val*(block.Δx+block.Δy)
         end
     end
-    return block
 end
 
 function applyBCS!(v, bcs)
     for i ∈ 1:size(v, 1)
         for j ∈ 1:size(v, 2)
-            v[i, j] =applyBC!(v[i, j], bcs[i, j])
+            applyBC!(v[i, j], bcs[i, j])
         end
     end
 end
@@ -215,7 +214,7 @@ setΔy!.(a, 0.1)
 #     end
 # end
 
-simulate(a, 5000.0, 0.1, bcs, fname="lol2d-nfsyconvωεϕ.gif", nf = 10)
+simulate(a, 50.0, 0.1, bcs, fname="lol2d-nfsyconvωεϕ.gif", nf = 10)
 
 # For testing do
 anim_func = Plots.gif
