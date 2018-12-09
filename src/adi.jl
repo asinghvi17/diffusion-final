@@ -155,7 +155,7 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
 
     numberFrames = 1
 
-    pm = Progress(Int(length(0:Δt:tm)/nf), desc="Animating")
+    pm = Progress(Int(round(length(0:Δt:tm)/nf)), desc="Animating")
 
     p = Animation()
     for t ∈ 0:Δt:tm
@@ -226,7 +226,7 @@ setΔy!.(a, 0.1)
 #     end
 # end
 
-simulate(a, 50.0, 0.1, bcs, fname="lol2d-nfsyconvωεϕ.gif", nf = 10)
+simulate(a, 5000.0, 0.1, bcs, fname="lol2d-nfsyconvωεϕ.gif", nf = 10)
 
 # For testing do
 anim_func = Plots.gif
