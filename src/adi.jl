@@ -153,9 +153,9 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
 
     counter = 0
 
-    numberFrames = 0
+    numberFrames = 1
 
-    pm = Progress(length(0:Δt:tm), desc="Animating")
+    pm = Progress(Int(length(0:Δt:tm)/nf), desc="Animating")
 
     p = Animation()
     for t ∈ 0:Δt:tm
@@ -194,9 +194,9 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
             aspect_ratio=1
             )
             frame(p)
-            nuberFrames += 1
+            next!(pm)
+            numberFrames += 1
         end
-        next!(pm)
         counter = counter + 1
     end
 
