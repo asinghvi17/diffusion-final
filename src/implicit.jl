@@ -3,7 +3,19 @@
 include.(["h.jl"])
 
 function getT(x::Block1D)
-    x.T
+    return x.T
+end
+
+function adjustBCs(bcs, bb, Δt::Real)
+    bcsa = deepcopy(bcs)
+    for i ∈ 1:length(bb)   # Adapt boundary conditions since this solver doesn't natively use the Block type
+        if bcsa[i].type == :flux
+            bcsa[i] = BoundaryCondition(bcsa[i].val*bb[i].Δx*Δt, bcsa[i].type)
+        else
+            bcsa[i] = bcsa[i]
+        end
+    end
+    return bcsa
 end
 
 function simulate( # Ladri di dirichlette
@@ -11,10 +23,7 @@ function simulate( # Ladri di dirichlette
                     bb,                        # the initial distribution
                     tm::Real,                  # the max time (time goes from 0 to tm)
                     Δt::Real,                  # the time step
-                    bl::Real,                  # numerical value of left BC
-                    tbl::Symbol,               # type of left BC - :flux or :temp
-                    br::Real,                  # numerical value of right BC
-                    tbr::Symbol;               # type of right BC - :flux or :temp
+                    bcs::Array{BoundaryCondition, 1}; # the boundary conditions
                     # KWARGS
                     anim_func = Plots.gif,
                     fname::String = "lolnv.gif",
@@ -22,14 +31,15 @@ function simulate( # Ladri di dirichlette
                     nf::Int = 1,
                     )
 
-    if !(tbl ∈ (:flux, :temp)) || !(tbr ∈ (:flux, :temp))
-        return "Lol noob"
-    end
-
     nx = length(bb)         # the dimension of the matrix
 
-    xs = zeros(length(bb))
-    for i in 2:length(bb)
+    bcsa = adjustBCs(bcs, bb, Δt)
+
+    b = getT.(bb)
+
+
+    xs = zeros(length(b))
+    for i in 2:length(b)
         xs[i] = bb[i].Δx + xs[i-1]
     end
 
@@ -43,6 +53,10 @@ function simulate( # Ladri di dirichlette
 
     A = K*M + I                                # matrix of the k-independent weights
 
+    A[1, 2] *= 2
+
+    A[end, end-1] *= 2
+
     # The definition of the A matrix is now complete.
 
     # Now, we can proceed to defining the vectors.
@@ -51,61 +65,15 @@ function simulate( # Ladri di dirichlette
 
     # implement boundary contitions
 
-    b = getT.(bb)
-
     ymax = maximum(b)
     ymin = minimum(b)
-
-    if tbr == :temp
-        ymax = max(ymax, br)
-        ymin = max(ymin, br)
-        A[end, end] = 1
-    else
-        A[end, end-1] *= 2
-    end
-    if tbl == :temp
-        ymax = max(ymax, bl)
-        ymin = max(ymin, bl)
-        A[1, 1] = 1
-    else
-        A[1, 2] *= 2
-    end
 
     pm = Progress(length(0:Δt:tm), desc="Animating", )
 
     anim = @animate for i ∈ 0:Δt:tm
-
-        if tbl == :flux
-            Lc = 2*bb[1].Δx*bl/b[1]
-        else
-            Lc = 0
-        end
-
-        if tbr == :flux
-            Rc = 2*bb[end].Δx*br/b[end]
-        else
-            Rc = 0
-        end
-
-
-        A[1, 1]     += Lc      # use the boundary conditions, luke
-        A[end, end] +=  Rc     # use the boundary conditions, warm
-
         x = A \ b
         b = x
-
-        if tbl == :flux
-            A[1, 1]     -= Lc      # remove the boundary conditions, luke
-        else
-            b[1] = bl
-        end
-
-        if tbr == :flux
-            A[end, end] -=  Rc     # remove the boundary conditions, warm
-        else
-            b[end] = br
-        end
-
+        b .= b .* bcsa
 
         p = scatter(
         xs, b,
@@ -113,7 +81,7 @@ function simulate( # Ladri di dirichlette
         xlabel="x",
         ylabel="T",
         legend=:none,
-        # ylims = (ymin-1, ymax+1)
+        # ylims = (ymin-2, ymax+2)
         )
         next!(pm)
     end every nf
@@ -122,10 +90,36 @@ function simulate( # Ladri di dirichlette
 
 end
 
-a = [Block1D(20.0, 0.01, 0.1) for i ∈ 1:length(0:0.1:25)]
+dx = 0.1
 
-for i in 63:187
-    a[i].T = 30
-end
+xm = 2.5
 
-simulate(a, 500.0, 0.1, .1, :flux, 20, :temp, nf = 50, fname="lolnvf.gif")
+# a = [Block1D(20.0, 0.01, 0.1) for i ∈ 1:length(0:dx:xm)]
+#
+# for i in 13:19
+#     a[i].T = 30
+# end
+# xs = [0.0]
+# for i ∈ a
+#     append!(xs, i.Δx+sum(xs))
+# end
+# xs = xs[2:end]
+#
+# bcs = zeros(length(0:dx:xm))
+#
+# bcs[1] = BoundaryCondition(.1, :flux)
+#
+# bcs[end] = BoundaryCondition(20.0, :temp)
+#
+# simulate(a, 5000.0, 0.1, bcs, nf = 50, fname="lolnvfc.gif")
+
+a = [Block1D(20.0, 0.01, 0.1) for i ∈ 1:length(0:dx:xm)]
+
+bcs = zeros(BoundaryCondition, length(0:dx:xm))
+
+bcs[1] = BoundaryCondition(0.2, :flux)
+bcs[Int(end/2)-2] = BoundaryCondition(-0.1, :flux)
+bcs[Int(end/2)+2] = BoundaryCondition(-0.1, :flux)
+bcs[end] = BoundaryCondition(0.2, :flux)
+
+simulate(a, 10000.0, 0.1, bcs, nf = 50, fname="lolnvfcpγ.gif")
