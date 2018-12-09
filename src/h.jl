@@ -23,11 +23,11 @@ using   Plots,                    # for plotting
         StatsBase,                # histogram
         LinearAlgebra             # to solve the matrix equations
 
-plotlyjs() # set Plots.jl backend
+import Base.*                     # to redefine multiplication behaviours for our Structs.
 
-import Base.*
+gr() # set Plots.jl backend
 
-# define Cell struct and methods related to it.
+
 mutable struct Block1D{T <: Real}
 
     T :: T   # temperature
@@ -50,32 +50,7 @@ mutable struct Block2D{T <:Real}
 
 end
 
-# This recipe governs the value that Plots.jl will extract out of a Block object.
-
-@recipe f(::Type{Block1D}, b::Block1D) = b.T
-
-# @recipe f(::Type{Block2D}, bb::Block2D)
-#
-# xs = zeros(length(bb))
-# for i in 2:length(bb)
-#     xs[i] = bb[i].Δx + xs[i-1]
-# end
-#
-# ys = zeros(length(bb))
-# for i in 2:length(bb)
-#     ys[i] = bb[i].Δy + ys[i-1]
-# end
-#
-#
-# end
-
-# This governs what happens when a Block object is multiplied by a value of type Symbolic
-
-Base.zero(::Type{Symbol}) = x -> 0
-
-# a matrix of conditions would do for this particular thing - apply the matrix to the Blocks elementwise.
-
-struct BoundaryCondition
+mutable struct BoundaryCondition
 
     val::Real
 
@@ -83,7 +58,56 @@ struct BoundaryCondition
 
 end
 
-# now, define the behaviour of the BoundaryCOndition and Block structs
+# define setter methodsa for easier mapping
+
+function setT!(b::Block1D, T::Real)
+    b.T = T
+end
+
+function setD!(b::Block1D, D::Real)
+    b.D = D
+end
+
+function setΔx!(b::Block1D, Δx::Real)
+    b.Δx = Δx
+end
+
+function setT!(b::Block2D, T::Real)
+    b.T = T
+end
+
+function setD!(b::Block2D, D::Real)
+    b.D = D
+end
+
+function setΔx!(b::Block2D, Δx::Real)
+    b.Δx = Δx
+end
+
+function setΔy!(b::Block2D, Δy::Real)
+    b.Δy = Δy
+end
+
+# These recipes govern the values that Plots.jl will extract out of Block objects.
+
+@recipe f(::Type{Block1D{<:Real}}, b::Block1D{<:Real}) = b.T
+
+@recipe f(::Type{Block1D{Float64}}, b::Block1D{Float64}) = b.T
+
+@recipe f(::Type{Block2D{Float64}}, b::Block2D{Float64}) = b.T
+
+# Here, we define the prototypical objects of Block, such that they can be used by Base.zeros and Base.ones
+
+Base.zero(::Type{Block1D}) = Block1D(0, 0, 0)
+Base.zero(::Type{Block2D}) = Block2D(0, 0, 0, 0)
+
+Base.zero(::Type{BoundaryCondition}) = BoundaryCondition(0, :none)
+
+Base.one(::Type{Block1D}) = Block1D(1, 1, 1)
+Base.one(::Type{Block2D}) = Block2D(1, 1, 1, 1)
+Base.one(::Type{Block2D{Float64}}) = Block2D(Float64(1), Float64(1), Float64(1), Float64(1))
+
+# now, define the multiplication behaviour of the BoundaryCondition struct
 
 *(a::BoundaryCondition, b::Block1D{<:Real}) = begin
     if a.type ∈ (:temp, :flux)
@@ -91,7 +115,7 @@ end
             b.T = a.val
             return b
         else
-            b.T -= a.val*(2*b.Δx)
+            b.T = b.T - a.val*(2*b.Δx)
             return b
         end
     else
@@ -107,7 +131,7 @@ end
             b.T = a.val
             return b
         else
-            b.T -= a.val*(b.Δx+b.Δy)
+            b.T = b.T - a.val*(b.Δx+b.Δy)
             return b
         end
     else
@@ -116,3 +140,56 @@ end
 end
 
 *(b::Block2D, a::BoundaryCondition) = Base.*(a, b)
+
+*(a::BoundaryCondition, b::Real) = begin
+    if a.type ∈ (:temp, :flux)
+        if a.type == :temp
+            b = a.val
+            return b
+        else
+            b = b - a.val*2
+            return b
+        end
+    else
+        return b
+    end
+end
+
+*(b::Real, a::BoundaryCondition) = *(a, b)
+
+*(a::BoundaryCondition, b::AbstractFloat) = begin
+    if a.type ∈ (:temp, :flux, :none)
+        if a.type == :temp
+            b = a.val
+            return b
+        elseif a.type == :flux
+            b = b - a.val*2
+            return b
+        else
+            return b
+        end
+    else
+        return b
+    end
+end
+
+*(b::AbstractFloat, a::BoundaryCondition) = *(a, b)
+
+*(a::BoundaryCondition, b::Float64) = begin
+    if a.type ∈ (:temp, :flux, :none)
+        if a.type == :temp
+            b = a.val
+            return b
+        elseif a.type == :flux
+            b = b - a.val*2
+            return b
+        else
+            return b
+        end
+    else
+        return b
+    end
+end
+
+
+*(b::Float64, a::BoundaryCondition) = *(a, b)
