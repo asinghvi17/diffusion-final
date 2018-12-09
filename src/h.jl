@@ -100,6 +100,8 @@ end
 
 Base.zero(::Type{Block1D}) = Block1D(0, 0, 0)
 Base.zero(::Type{Block2D}) = Block2D(0, 0, 0, 0)
+Base.zero(::Type{Block2D{Float64}}) = Block2D(0.0, 0.0, 0.0, 0.0)
+
 
 Base.zero(::Type{BoundaryCondition}) = BoundaryCondition(0, :none)
 

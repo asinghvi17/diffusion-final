@@ -183,8 +183,8 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
         title = "t=$(string(t)[1:min(end, 4)])",
         xlabel="x",
         ylabel="y",
-        legend=:none,
         fill=true,
+        clims=(0, 30)
         )
         next!(pm)
     end every nf
@@ -193,13 +193,13 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
 
 end
 
-nx = 10
+nx = 50
 
-ny = 10
+ny = 50
 
 bcs = zeros(BoundaryCondition, nx, ny)
 for i in 1:nx
-    bcs[i, 1]   = BoundaryCondition(0.1, :flux)
+    bcs[i, 1]   = BoundaryCondition(10, :temp)
     bcs[i, end] = BoundaryCondition(20, :temp)
 end
 
@@ -208,14 +208,14 @@ setT!.(a, 20.0)
 setD!.(a, 0.001)
 setΔx!.(a, 0.1)
 setΔy!.(a, 0.1)
+#
+# for i ∈ 1:nx
+#     for j ∈ 1:ny
+#         a[i, j].T += i
+#     end
+# end
 
-for i ∈ 1:nx
-    for j ∈ 1:ny
-        a[i, j].T += i
-    end
-end
-
-simulate(a, 10.0, 0.1, bcs, fname="lol2d-nfsyconv.gif")
+simulate(a, 5000.0, 0.1, bcs, fname="lol2d-nfsyconvωεϕ.gif", nf = 10)
 
 # For testing do
 anim_func = Plots.gif
