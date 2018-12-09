@@ -72,6 +72,9 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
     xs = 1:nx
     ys = 1:ny
 
+    xstr = (x -> "X$(x)").(xs)
+    ystr = (x -> "Y$(x)").(ys)
+
     # bv = vcat(bb)        # convert the 2d matrix of blocks into a 1d construction.
 
     # begin x-axis config of implicit matrices - one for x axis, one for y axis (since grid may not be square)
@@ -176,8 +179,8 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
         counter = counter + 1
 
         heatmap(
-        (x -> "X$(x)").(xs),
-        (x -> "Y$(x)").(ys),
+        xstr,
+        ystr,
         getT.(v),
         title = "t=$(string(t)[1:min(end, 4)])",
         xlabel="x",
