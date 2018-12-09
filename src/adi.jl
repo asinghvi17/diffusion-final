@@ -3,7 +3,7 @@
 include.(["h.jl"])
 
 """
-On the Methods of Applications of Boundary Conditions to a 2x2 Matrix in an Explicit Manner (because we do not have time for an Implicit Manner of the Application of such Things)
+On the Methods of Applications of Boundary Conditions to a 2x2 Matrix in an Explicit Manner (because we do not have Time to Implement an Implicit Method of the Application of such Things)
 
 To apply a boundary condition of the zeroth order, a Dirichlet boundary condition, one need only set the temperature of the offending Block to the proscribed one, thus being it back again into the fold.
 
@@ -74,6 +74,7 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
 
     xstr = (x -> "X$(x)").(xs)
     ystr = (x -> "Y$(x)").(ys)
+    ts = (t -> "t=$(string(t)[1:min(end, 4)])").(0:Δt*nf:tm)
 
     # bv = vcat(bb)        # convert the 2d matrix of blocks into a 1d construction.
 
@@ -152,6 +153,8 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
 
     counter = 0
 
+    numberFrames = 0
+
     pm = Progress(length(0:Δt:tm), desc="Animating")
 
     p = Animation()
@@ -183,7 +186,7 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
             xstr,
             ystr,
             getT.(v),
-            title = "t=$(string(t)[1:min(end, 4)])",
+            title = ts[numberFrames],
             xlabel="x",
             ylabel="y",
             fill=true,
@@ -191,7 +194,7 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
             aspect_ratio=1
             )
             frame(p)
-
+            nuberFrames += 1
         end
         next!(pm)
         counter = counter + 1
