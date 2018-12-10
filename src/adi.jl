@@ -36,7 +36,7 @@ On the Methods of Applications of Boundary Conditions to a 2x2 Matrix in an Expl
 
 To apply a boundary condition of the zeroth order, a Dirichlet boundary condition, one need only set the temperature of the offending Block to the proscribed one, thus being it back again into the fold.
 
-To apply a boundary condition of the first order, a Neumann boundary condition, one must calculate the necessary flux into it through the application of a 2Δx⋅αΔt.  Should one have knowledge of such mystic paths, the way is then clear to all but the most simple-minded among us.
+To apply a boundary condition of the first order, a Neumann boundary condition, one must calculate the necessary flux into it through the application of a 2Δx⋅αΔt.  Should one have knowledge of such mystic paths, the way is then clear to all.
 """
 
 function getT(x)
