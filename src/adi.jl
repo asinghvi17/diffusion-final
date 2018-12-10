@@ -278,8 +278,8 @@ tm = 5.0
 
 
 #  _______________________________________________________________________
-# /\                                                                      \
-# \_|            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE              |
+#/ \                                                                      \
+#\_|            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE              |
 #  |                    Version 2, December 2004                         |
 #  |                                                                     |
 #  | Copyright (C) 2018 Anshul Singhvi <asinghvi17@simons-rock.edu>      |
