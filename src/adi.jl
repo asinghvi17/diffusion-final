@@ -93,6 +93,11 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
     Mx = Tridiagonal(dsix, dmix, diix)
     My = Tridiagonal(dsiy, dmiy, diiy)
 
+    Mx[1, 2]       *= 2
+    Mx[end-1, end] *= 2
+    My[1, 2]       *= 2
+    My[end-1, end] *= 2
+
     # Unlike in the implicit solver, we will have to define the A-matrix separately each time inside the for loop.  This is because the weights on M will change for every vector, and so it is necessary to make sure it works as intended.
 
     # Use mapslices to more efficiently map Aand its linear combinations...this may not be posiblefor efficiency's sake, though...must be careful unless defining a 'functional matrix'. Or, nest mapslices() calls.
@@ -111,6 +116,11 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
 
     Cx = Tridiagonal(dsex, dmex, diex)    # the explicit method will function through iterative mapping of the slices of the block matrix..
     Cy = Tridiagonal(dsey, dmey, diey)
+
+    Cx[1, 2]       *= 2
+    Cx[end-1, end] *= 2
+    Cy[1, 2]       *= 2
+    Cy[end-1, end] *= 2
 
     function solveImplicitX(b)
 
