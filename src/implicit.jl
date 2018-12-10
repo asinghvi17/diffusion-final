@@ -146,9 +146,7 @@ a = [Block1D(20.0, 0.01, 0.1) for i ∈ 1:length(0:dx:xm)]
 
 bcs = zeros(BoundaryCondition, length(0:dx:xm))
 
-bcs[1] = BoundaryCondition(0.2, :flux)
-bcs[Int(end/2)-2] = BoundaryCondition(-0.1, :flux)
-bcs[Int(end/2)+2] = BoundaryCondition(-0.1, :flux)
-bcs[end] = BoundaryCondition(0.2, :flux)
+bcs[1] = BoundaryCondition(0.1, :flux)
+bcs[end] = BoundaryCondition(20, :temp)
 
-simulate(a, 10000.0, 0.1, bcs, nf = 50, fname="lolnvfcpγ.gif")
+simulate(a, 5000.0, 0.1, bcs, nf = 50, fname="lolnvfcpγι.gif")
