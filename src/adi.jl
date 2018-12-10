@@ -1,5 +1,34 @@
-# Use a tridiag with bcs matrix applied after... does this work with implicit?  Probably but will have to check
-
+##############################################
+#  ________________________________________  #
+# /  DO WHAT THE FUCK YOU WANT TO PUBLIC   \ #
+# | LICENSE                                | #
+# |                                        | #
+# | Version 2, December 2004               | #
+# |                                        | #
+# | Copyright (C) 2018 Anshul Singhvi      | #
+# | <asinghvi17@simons-rock.edu>           | #
+# |                                        | #
+# | Everyone is permitted to copy and      | #
+# | distribute verbatim or modified copies | #
+# | of this license document, and changing | #
+# | it is allowed as long as the name is   | #
+# | changed.                               | #
+# |                                        | #
+# | DO WHAT THE FUCK YOU WANT TO PUBLIC    | #
+# | LICENSE                                | #
+# |                                        | #
+# | TERMS AND CONDITIONS FOR COPYING,      | #
+# | DISTRIBUTION AND MODIFICATION          | #
+# |                                        | #
+# | 0. You just DO WHAT THE FUCK YOU WANT  | #
+# \ TO.                                    / #
+#  ----------------------------------------  #
+#         \   ^__^                           #
+#          \  (oo)\_______                   #
+#             (__)\       )\/\               #
+#                 ||----w |                  #
+#                 ||     ||                  #
+##############################################
 include.(["h.jl"])
 
 """
@@ -93,10 +122,10 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
     Mx = Tridiagonal(dsix, dmix, diix)
     My = Tridiagonal(dsiy, dmiy, diiy)
 
-    Mx[1, 2]       *= 2
-    Mx[end-1, end] *= 2
-    My[1, 2]       *= 2
-    My[end-1, end] *= 2
+    # Mx[1, 2]       *= 2
+    # Mx[end-1, end] *= 2
+    # My[1, 2]       *= 2
+    # My[end-1, end] *= 2
 
     # Unlike in the implicit solver, we will have to define the A-matrix separately each time inside the for loop.  This is because the weights on M will change for every vector, and so it is necessary to make sure it works as intended.
 
@@ -117,10 +146,10 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
     Cx = Tridiagonal(dsex, dmex, diex)    # the explicit method will function through iterative mapping of the slices of the block matrix..
     Cy = Tridiagonal(dsey, dmey, diey)
 
-    Cx[1, 2]       *= 2
-    Cx[end-1, end] *= 2
-    Cy[1, 2]       *= 2
-    Cy[end-1, end] *= 2
+    # Cx[1, 2]       *= 2
+    # Cx[end-1, end] *= 2
+    # Cy[1, 2]       *= 2
+    # Cy[end-1, end] *= 2
 
     function solveImplicitX(b)
 
