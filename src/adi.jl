@@ -98,12 +98,12 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
 
     v = deepcopy(bb)
 
-    xs = 1:nx
-    ys = 1:ny
+    xs = 1:nx   # the series of 'x coords'
+    ys = 1:ny   # the series of 'y coords'
 
-    xstr = (x -> "X$(x)").(xs)
-    ystr = (x -> "Y$(x)").(ys)
-    ts = (t -> "t=$(string(t)[1:min(end, 4)])").(0:Δt*nf:tm)
+    xstr = (x -> "X$(x)").(xs) # x coords as strings
+    ystr = (x -> "Y$(x)").(ys) # y coords as strings
+    ts = (t -> "t=$(string(t)[1:min(end, 4)])").(0:Δt*nf:tm) # timesteps as strings
 
     # bv = vcat(bb)        # convert the 2d matrix of blocks into a 1d construction.
 
@@ -190,13 +190,13 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
         return b
     end
 
-    counter = 0
+    counter = 0              # the number of iterations
 
-    numberFrames = 1
+    numberFrames = 1         # the number of frames currently made.  To work with Julia 1-based indexing, it starts at 1 and goes to end.
 
-    pm = Progress(Int(round(length(0:Δt:tm)/nf)), desc="Animating")
+    pm = Progress(Int(round(length(0:Δt:tm)/nf)), desc="Animating")   # the progresss bar, to be displayed on the screen
 
-    p = Animation()
+    p = Animation()         # initialize the animation
     for t ∈ 0:Δt:tm
 
         # pre-apply boundary conditions.
@@ -217,29 +217,27 @@ function simulate( # Ladri di dirichlette, Neumann-Diebe
             v = mapslices(solveImplicitY, permutedims(Bx), dims=1) # double transpose to retain the shape
         end
 
-        # apply BCs
-
-        if counter % nf == 0
+        if counter % nf == 0 # then plot, otherwise continue with mainloop
 
             heatmap(
             xstr,
             ystr,
-            getT.(v),
+            getT.(v),                 # since plot recipe is not working at the moment, use getT()
             title = ts[numberFrames],
             xlabel="x",
             ylabel="y",
-            fill=true,
-            clims=(0, 30),
+            fill=true,                 # make sure that the graph is filled, not points.
+            clims=(0, 30),             # set limits of colormap.  Only supported by plotlyjs, pyplot, glvisualze and hdf5.  No gr, inspectdr or pgfplots.
             aspect_ratio=1
             )
-            frame(p)
-            next!(pm)
-            numberFrames += 1
+            frame(p)                   # add the current figure as a Frame to the animation
+            next!(pm)                  # increment the progress bar
+            numberFrames += 1          # increment the number of frames
         end
-        counter = counter + 1
+        counter = counter + 1          # increment the number of iterations
     end
 
-    anim_func(p, fname, fps=fps)
+    anim_func(p, fname, fps=fps)       # save the animation using anim_func at fname with framerate fps
 
 end
 
@@ -265,7 +263,7 @@ setΔy!.(a, 0.1)
 #     end
 # end
 
-simulate(a, 5000.0, 0.1, bcs, fname="lol2d-nfsyconvωεϕϟ⁉.gif", nf = 10)
+@time simulate(a, 5000.0, 0.1, bcs, fname="lol2d-nfsyconvωεϕϟ⁉.gif", nf = 10)
 
 # For testing do
 anim_func = Plots.gif

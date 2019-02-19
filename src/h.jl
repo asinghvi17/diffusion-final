@@ -212,3 +212,5 @@ end
 
 
 *(b::Float64, a::BoundaryCondition) = *(a, b)
+
+*(a::Float64, b::Block2D{Float64}) = Block2D(b.T*a, b.D, b.Δx, b.Δy)
